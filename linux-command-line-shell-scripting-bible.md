@@ -2,9 +2,9 @@
 
 ## 书名
 
-英：《Linux Command Line and Shell Scripting Bible》
-
 中：《Linux 命令行与 shell 脚本编程大全》
+
+英：《Linux Command Line and Shell Scripting Bible》
 
 <div align="left">
 
