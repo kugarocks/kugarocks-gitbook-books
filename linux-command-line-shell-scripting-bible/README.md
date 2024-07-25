@@ -8,6 +8,6 @@
 
 <div align="left">
 
-<figure><img src=".gitbook/assets/linux-command-shell-book.jpg" alt="" width="421"><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/linux-command-shell-book.jpg" alt="" width="421"><figcaption></figcaption></figure>
 
 </div>
