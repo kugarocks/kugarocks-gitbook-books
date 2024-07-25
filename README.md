@@ -1,11 +1,11 @@
 ---
-description: 一些笔记和读后感
+description: 《My Life as Programmer》
 ---
 
 # README
 
 <div align="left">
 
-<figure><img src=".gitbook/assets/trust-me-i-read-books.webp" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/i-should-write-a-book.webp" alt=""><figcaption></figcaption></figure>
 
 </div>
