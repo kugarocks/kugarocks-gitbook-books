@@ -1,6 +1,6 @@
 # Systemd
 
-## 系统的第一个进程
+## Systemd
 
 ```
 root  1  0.0  0.2 191052  4092 ?  Ss  Jul19  0:10 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
@@ -10,11 +10,11 @@ systemd 进程号为 1，主要功能是系统初始化、进程管理和日志�
 
 ## SysVinit
 
-这种初始化方法现在已经不怎么用了，但在一些旧的发行版中还能见到。
+Unix System V 这种初始化方法现在已经不怎么用了，但在一些旧的发行版中还能见到。
 
 ### Runlevel
 
-runlevel 也是这个 SysVinit 的产物。在 CentOS 中可以通过下面的方式查询 runlevel。
+runlevel 也是这个 SysVinit 的产物，在 CentOS 中可以通过下面的方式查询 runlevel。
 
 ```
 $ runlevel
@@ -51,9 +51,14 @@ $ cat /etc/inittab
 
 ### rc.d
 
-rc 是 run commands 的意思，
+rc 是 run commands 的缩写，d 是目录的意思，目的是为了避免单一配置文件与包含它们的目录之间的命名冲突。另外以前 /etc/init 和 /etc/init.d 在同一个目录，现在 /etc/init 已经搬到 /sbin/init，而且你会发现他指向的是 systemd。
 
-/etc/rc.d 这个目录包含了特定运行级下启动的的进程，例如运行级 3 对应 /etc/rc.d/rc3.d，现在已经被 systmd  代替了。
+```
+$ ll /sbin/init
+lrwxrwxrwx 1 root root 22 Jun 28 12:29 /sbin/init -> ../lib/systemd/systemd
+```
+
+/etc/rc.d 这个目录包含了特定运行级下启动的进程，例如运行级 3 对应 /etc/rc.d/rc3.d。
 
 ## Unit Files
 
