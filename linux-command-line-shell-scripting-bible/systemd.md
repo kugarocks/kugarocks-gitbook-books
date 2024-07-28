@@ -64,7 +64,7 @@ lrwxrwxrwx 1 root root 22 Jun 28 12:29 /sbin/init -> ../lib/systemd/systemd
 
 单元文件是 systemd 的配置文件，用于定义和管理系统服务、设备、挂载点、套接字和其他系统资源。每个单元文件都描述了 systemd 如何启动、停止和监视相关资源。
 
-### 单元文件的分类
+### 基本分类
 
 * **服务单元（Service Unit）**：用于定义系统服务，扩展名为 `.service`。
 * **挂载单元（Mount Unit）**：用于定义文件系统挂载点，扩展名为 `.mount`。
@@ -73,35 +73,60 @@ lrwxrwxrwx 1 root root 22 Jun 28 12:29 /sbin/init -> ../lib/systemd/systemd
 * **计时器单元（Timer Unit）**：用于定义定时任务，扩展名为 `.timer`。
 * **目标单元（Target Unit）**：用于定义系统的目标状态，扩展名为 `.target`。
 
-### 单元文件的目录
+### 所在目录
 
 * `/etc/systemd/system/`：系统管理员定义的单元文件。
 * `/usr/lib/systemd/system/`：发行版提供的单元文件。
 * `/run/systemd/system/`：运行时生成的单元文件。
 
-### Nginx 的单元文件
+### Nginx 单元文件
+
+```
+$ ll /etc/systemd/system/multi-user.target.wants/nginx.service
+...nginx.service -> /usr/lib/systemd/system/nginx.service
+```
 
 ```ini
+$ cat /usr/lib/systemd/system/nginx.service
+# 定义了服务的描述和依赖关系
 [Unit]
-Description=My Example Service
-After=network.target
+Description=The nginx HTTP and reverse proxy server
+After=network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
 
+# 定义了如何启动、停止和重启服务
 [Service]
-ExecStart=/usr/bin/my-service
-Restart=always
-User=nobody
+# forking 表示服务在启动时会创建子进程，父进程会退出
+Type=forking
+# 存储主进程的 ID
+PIDFile=/run/nginx.pid
+# Nginx will fail to start if /run/nginx.pid already exists but has the wrong
+# SELinux context. This might happen when running `nginx -t` from the cmdline.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1268621
 
+# 启动准备，删除 pid 文件
+ExecStartPre=/usr/bin/rm -f /run/nginx.pid
+# 启动准备，测试 nginx 配置
+ExecStartPre=/usr/sbin/nginx -t
+# 启动命令
+ExecStart=/usr/sbin/nginx
+# 重载配置命令
+ExecReload=/usr/sbin/nginx -s reload
+# 停止服务时发送给主进程的信号
+KillSignal=SIGQUIT
+# 终止服务的等待时间，超过 5 秒则强制终止
+TimeoutStopSec=5
+# 终止进程的方式，仅终止主进程，不会影响子进程
+KillMode=process
+# 创建独立的临时目录，/tmp 和 /var/tmp
+PrivateTmp=true
+
+# 如何安装和启用服务
 [Install]
 WantedBy=multi-user.target
 ```
 
-解释如下：
-
-* `[Unit]`部分定义了服务的描述和依赖关系。
-* `[Service]`部分定义了如何启动、停止和重启服务。
-* `[Install]`部分定义了如何安装和启用服务。
-
-可以使用以下命令管理单元文件：
+### 常用命令：
 
 * `systemctl start [unit]`：启动单元。
 * `systemctl stop [unit]`：停止单元。
@@ -109,8 +134,6 @@ WantedBy=multi-user.target
 * `systemctl disable [unit]`：禁用单元。
 * `systemctl status [unit]`：查看单元状态。
 * `systemctl daemon-reload`：在修改或添加单元文件后重新加载 systemd 配置。
-
-单元文件是 systemd 配置和管理系统资源的核心机制，通过灵活的配置和强大的依赖管理能力，使系统管理员能够更高效地管理系统服务和资源。
 
 ## Targets
 

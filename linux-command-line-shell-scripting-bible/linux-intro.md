@@ -1,4 +1,4 @@
-# 1.0 初识 Linux
+# 初识 Linux
 
 ## Linux 的定义
 
