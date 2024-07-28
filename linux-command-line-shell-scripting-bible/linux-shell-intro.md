@@ -6,12 +6,6 @@
 
 ## Linux Torvalds
 
-<div align="left">
-
-<figure><img src="../.gitbook/assets/Linus_Torvalds.jpg" alt=""><figcaption></figcaption></figure>
-
-</div>
-
 这个名字的发音要怎么读呢，挺好奇的，搜了一下，还真有人搞了一个集合，救命啊哈哈哈😹
 
 {% embed url="https://www.youtube.com/watch?v=MMSVy4e6-T0" %}
@@ -28,10 +22,4 @@ Torvalds 一开始想把操作系统命名为 Freax，这是 free、freak,、x�
 
 ## Linux 吉祥物 Tux
 
-<div align="left">
-
-<figure><img src="../.gitbook/assets/Tux.svg" alt=""><figcaption></figcaption></figure>
-
-</div>
-
-Torvalds 提到他以前在 Canberra 动物园被一只企鹅咬过，他觉得一只吃饱后坐着的稍微有点胖的企鹅非常合适作为 Linux 的吉祥物。第一个称这只企鹅为 Tux 的人是 James Hughes，他说这代表 (T)orvalds (U)ni(X)。另外 TUX 也是 tuxedo (燕尾服)的缩写，燕尾服与企鹅的外观相似。
+Torvalds 提到他以前在 Canberra 动物园被一只企鹅咬过，他觉得一只吃饱后坐着的稍微有点胖的企鹅非常合适作为 Linux 的吉祥物。第一个称这只企鹅为 Tux 的人是 James Hughes，他说这代表 (T)orvalds (u)ni(x)。另外 Tux 也是 Tuxedo (燕尾服)的缩写，燕尾服与企鹅的外观相似。
