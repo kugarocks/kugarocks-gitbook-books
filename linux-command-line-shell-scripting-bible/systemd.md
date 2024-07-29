@@ -126,7 +126,30 @@ PrivateTmp=true
 WantedBy=multi-user.target
 ```
 
-### 常用命令：
+### Nginx 状态
+
+```
+$ systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2024-07-24 16:21:13 CST; 4 days ago
+  Process: 23494 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
+  Process: 23491 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+  Process: 23488 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+ Main PID: 23496 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─23496 nginx: master process /usr/sbin/nginx
+           ├─23665 nginx: worker process
+           └─23666 nginx: worker process
+
+Jul 24 16:21:13 systemd[1]: Stopped The nginx HTTP and reverse proxy server.
+Jul 24 16:21:13 systemd[1]: Starting The nginx HTTP and reverse proxy server...
+Jul 24 16:21:13 nginx[23491]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+Jul 24 16:21:13 nginx[23491]: nginx: configuration file /etc/nginx/nginx.conf test is successful
+Jul 24 16:21:13 systemd[1]: Started The nginx HTTP and reverse proxy server.
+```
+
+### 常用命令
 
 * `systemctl start [unit]`：启动单元。
 * `systemctl stop [unit]`：停止单元。
