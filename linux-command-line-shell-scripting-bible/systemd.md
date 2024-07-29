@@ -160,6 +160,8 @@ Jul 24 16:21:13 systemd[1]: Started The nginx HTTP and reverse proxy server.
 
 ## Targets
 
+上面可以看到，Targets 是一种单元文件的类型，不同的是，它代表的是一种状态，是多个单元文件的集合，我们可以通过 systemctl 查看当前的 targets。
+
 是一种特殊类型的 unit files，用于组织和管理系统的不同状态。它们类似于传统 System V init 系统中的 runlevels，但更加灵活和强大。targets 可以定义一组服务和其他 targets，以实现复杂的依赖关系和启动顺序。
 
 以下是一些常见的 systemd targets 及其用途：
