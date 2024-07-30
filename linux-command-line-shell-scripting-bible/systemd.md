@@ -236,19 +236,19 @@ AllowIsolate=yes
 
 ### 常用命令
 
-**设置默认 target**：
+设置默认 target：
 
 ```
 systemctl set-default multi-user.target
 ```
 
-**切换到指定 target**：
+切换到指定 target：
 
 ```
 systemctl isolate graphical.target
 ```
 
-**查看可用 targets**：
+查看可用 targets：
 
 ```
 systemctl list-units --type=target
