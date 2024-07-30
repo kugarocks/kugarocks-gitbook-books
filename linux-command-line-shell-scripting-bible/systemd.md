@@ -10,7 +10,7 @@ ps aux | grep systemd
 root  1  0.0  0.2 191052  4092 ?  Ss  Jul19  0:10 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
 ```
 
-systemd 进程号为 1，主要功能是系统初始化、进程管理和日志记录。名称后面加 d 是 Unix 守护进程的命名规范。[System D](https://en.wikipedia.org/wiki/System\_D) 也是一个术语，表示快速思考和解决问题的能力。它是 2010 年诞生的，在这之前用的是 SysVinit。
+systemd 进程号为 1，主要功能是系统初始化、进程管理和日志记录。名称后面加 `.d` 是 Unix 守护进程的命名规范。[System D](https://en.wikipedia.org/wiki/System\_D) 也是一个术语，表示快速思考和解决问题的能力。它是 2010 年诞生的，在这之前用的是 SysVinit。
 
 ## SysVinit
 
@@ -28,7 +28,7 @@ runlevel
 N 3
 ```
 
-3 表示 multi-user，N 表示上一次的 runlevel 为 No，下面是 who 的例子。
+3 表示 `multi-user.target`，N 表示上一次的 runlevel 为 No，下面是 who 的例子。
 
 ```
 who -r
@@ -38,7 +38,7 @@ who -r
 run-level 3  2024-07-19 15:10
 ```
 
-/etc/inittab 文件定义了系统的默认运行级，看注释已经不再用了。
+`/etc/inittab` 文件定义了系统的默认运行级，看注释已经不再用了。
 
 ```
 cat /etc/inittab
@@ -66,7 +66,7 @@ cat /etc/inittab
 
 ### rc.d
 
-rc 是 run commands 的缩写，d 是目录的意思，目的是为了避免单一配置文件与包含它们的目录之间的命名冲突。另外以前 /etc/init 和 /etc/init.d 在同一个目录，现在 /etc/init 已经搬到 /sbin/init，而且你会发现他指向的是 systemd。
+rc 是 run commands 的缩写，d 是目录的意思，目的是为了避免单一配置文件与包含它们的目录之间的命名冲突。另外以前 `/etc/init` 和 `/etc/init.d` 在同一个目录，现在 `/etc/init` 已经搬到 `/sbin/init`，而且你会发现他指向的是 systemd。
 
 ```
 ll /sbin/init
@@ -76,7 +76,7 @@ ll /sbin/init
 lrwxrwxrwx 1 root root 22 Jun 28 12:29 /sbin/init -> ../lib/systemd/systemd
 ```
 
-/etc/rc.d 这个目录包含了特定运行级下启动的进程，例如运行级 3 对应 /etc/rc.d/rc3.d。
+`/etc/rc.d` 这个目录包含了特定运行级下启动的进程，例如运行级 3 对应 `/etc/rc.d/rc3.d`。
 
 ## Unit Files
 
@@ -238,18 +238,18 @@ AllowIsolate=yes
 
 **设置默认 target**：
 
-```sh
+```
 systemctl set-default multi-user.target
 ```
 
 **切换到指定 target**：
 
-```sh
+```
 systemctl isolate graphical.target
 ```
 
 **查看可用 targets**：
 
-```sh
+```
 systemctl list-units --type=target
 ```
