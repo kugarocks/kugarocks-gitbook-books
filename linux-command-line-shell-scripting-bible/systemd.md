@@ -3,6 +3,10 @@
 ## Systemd
 
 ```
+ps aux | grep systemd
+```
+
+```
 root  1  0.0  0.2 191052  4092 ?  Ss  Jul19  0:10 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
 ```
 
@@ -17,19 +21,30 @@ Unix System V 这种初始化方法现在已经不怎么用了，但在一些旧
 runlevel 也是这个 SysVinit 的产物，在 CentOS 中可以通过下面的方式查询 runlevel。
 
 ```
-$ runlevel
+runlevel
+```
+
+```
 N 3
+```
 
-// 3 表示 multi-user mode，N 是上一次 runlevel，表示 No。
+3 表示 multi-user，N 表示上一次的 runlevel 为 No，下面是 who 的例子。
 
-$ who -r
+```
+who -r
+```
+
+```
 run-level 3  2024-07-19 15:10
 ```
 
 /etc/inittab 文件定义了系统的默认运行级，看注释已经不再用了。
 
 ```
-$ cat /etc/inittab
+cat /etc/inittab
+```
+
+```
 # inittab is no longer used when using systemd.
 #
 # ADDING CONFIGURATION HERE WILL HAVE NO EFFECT ON YOUR SYSTEM.
@@ -54,7 +69,10 @@ $ cat /etc/inittab
 rc 是 run commands 的缩写，d 是目录的意思，目的是为了避免单一配置文件与包含它们的目录之间的命名冲突。另外以前 /etc/init 和 /etc/init.d 在同一个目录，现在 /etc/init 已经搬到 /sbin/init，而且你会发现他指向的是 systemd。
 
 ```
-$ ll /sbin/init
+ll /sbin/init
+```
+
+```
 lrwxrwxrwx 1 root root 22 Jun 28 12:29 /sbin/init -> ../lib/systemd/systemd
 ```
 
@@ -82,12 +100,18 @@ lrwxrwxrwx 1 root root 22 Jun 28 12:29 /sbin/init -> ../lib/systemd/systemd
 ### Nginx 单元文件
 
 ```
-$ ll /etc/systemd/system/multi-user.target.wants/nginx.service
+ll /etc/systemd/system/multi-user.target.wants/nginx.service
+```
+
+```
 ...nginx.service -> /usr/lib/systemd/system/nginx.service
 ```
 
-```ini
-$ cat /usr/lib/systemd/system/nginx.service
+```
+cat /usr/lib/systemd/system/nginx.service
+```
+
+```
 # 定义了服务的描述和依赖关系
 [Unit]
 Description=The nginx HTTP and reverse proxy server
@@ -129,7 +153,10 @@ WantedBy=multi-user.target
 ### Nginx 状态
 
 ```
-$ systemctl status nginx
+systemctl status nginx
+```
+
+```
 ● nginx.service - The nginx HTTP and reverse proxy server
    Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
    Active: active (running) since Wed 2024-07-24 16:21:13 CST; 4 days ago
@@ -160,27 +187,54 @@ Jul 24 16:21:13 systemd[1]: Started The nginx HTTP and reverse proxy server.
 
 ## Targets
 
-上面可以看到，Targets 是一种单元文件的类型，不同的是，它代表的是一种状态，是多个单元文件的集合，我们可以通过 systemctl 查看当前的 targets。
+从上面可以看到，target 是一种单元文件的类型，和一般单元文件不同，它代表的是系统当前的运行状态，target 定义了该状态下需要启动哪些进程和服务，所以 target 可以包含多个单元文件。用下面的命令可以查看当前系统的 target。
 
-是一种特殊类型的 unit files，用于组织和管理系统的不同状态。它们类似于传统 System V init 系统中的 runlevels，但更加灵活和强大。targets 可以定义一组服务和其他 targets，以实现复杂的依赖关系和启动顺序。
-
-以下是一些常见的 systemd targets 及其用途：
-
-1. **basic.target**：基本系统服务已启动但尚未进行多用户操作的状态。
-2. **multi-user.target**：多用户模式，不包含图形界面，适用于服务器环境。
-3. **graphical.target**：多用户模式，包含图形界面，适用于桌面环境。
-4. **rescue.target**：单用户模式，用于系统恢复和维护。
-5. **emergency.target**：紧急模式，仅启动最小的系统环境，通常用于修复严重问题。
-6. **reboot.target**：重启系统。
-7. **poweroff.target**：关闭系统。
-8. **halt.target**：停止系统。
-9. **default.target**：默认启动的 target，通常是 multi-user.target 或 graphical.target。
-
-**查看当前默认 target**：
-
-```sh
+```
 systemctl get-default
 ```
+
+```
+multi-user.target # 多用户模式，不包含图形界面
+```
+
+### multi-user.target
+
+target 文件通常存储在 `/usr/lib/systemd/system/` 或 `/etc/systemd/system/` 目录中。每个 target 文件都包含关于该 target 的依赖关系和启动顺序的信息。我们可以看一下 `multi-user.target` 这个文件内容。
+
+```
+cat /usr/lib/systemd/system/multi-user.target
+```
+
+```
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Multi-User System
+Documentation=man:systemd.special(7)
+Requires=basic.target
+Conflicts=rescue.service rescue.target
+After=basic.target rescue.service rescue.target
+AllowIsolate=yes
+```
+
+下面两个目录包含了 `multi-user.target` 状态所需要的内容。
+
+```
+/etc/systemd/system/multi-user.target.wants/
+/usr/lib/systemd/system/multi-user.target.wants/
+```
+
+上面的是用户定义配置，下面的是系统默认配置
+
+* 用户定义配置：优先级更高，同一服务 systemd 会优先执行。
+* 系统默认配置：系统或软件包更新时，会随之更新。
+
+### 常用命令
 
 **设置默认 target**：
 
@@ -198,17 +252,4 @@ systemctl isolate graphical.target
 
 ```sh
 systemctl list-units --type=target
-```
-
-targets 文件通常存储在 `/usr/lib/systemd/system/` 或 `/etc/systemd/system/` 目录中。每个 target 文件都包含关于该 target 的依赖关系和启动顺序的信息。例如，一个简单的 multi-user.target 文件可能如下：
-
-```ini
-iniCopy code[Unit]
-Description=Multi-User System
-Documentation=man:systemd.special(7)
-Requires=basic.target
-Wants=remote-fs.target
-After=basic.target remote-fs.target
-Conflicts=rescue.service rescue.target
-AllowIsolate=yes
 ```
