@@ -22,8 +22,36 @@
 
 ## Teletype
 
-虽然 Teletype 设备现在已经不用了，但它的概念和功能依然存在于 Linux 中。
+虽然 Teletype 设备现在已经不再使用了，但它的概念和功能依然保留在 Linux 中。
+
+### /dev/tty
+
+可以看到它的文件类型是 `c`（字符设备），代表当前进程所连接的终端设备。
 
 ```
-crw-rw-rw- 1 root tty 5, 0 Jul 24 16:40 /dev/tty
+crw-rw-rw- 1 root tty 5, 0 Aug  3 17:17 /dev/tty
 ```
+
+它的权限是 `666`，设备号是 `0`，这就是我们常常看到的标准输入/输出。
+
+```
+echo "Hello, World" > /dev/tty
+```
+
+```
+read -p "Enter your name: " name < /dev/tty
+echo "Hello, $name"
+```
+
+### /dev/pts
+
+PTS 是伪终端的简写（Pseudo-Terminal），`/dev/pts` 是一个目录，用于存放伪终端设备文件
+
+
+
+在命令行中输入 `tty`，会得到以下的输出。
+
+```
+/dev/pts/0
+```
+
