@@ -2,7 +2,11 @@
 
 ## 早期终端
 
+<div align="left">
 
+<figure><img src="../.gitbook/assets/early-terminal.jpg" alt=""><figcaption><p>IBM 2260</p></figcaption></figure>
+
+</div>
 
 早期的终端是一种独立的硬件设备，用于连接到主计算机或服务器。它们通常包括：
 
@@ -12,6 +16,12 @@
 例如：早期的 Teletype (tty) 终端、DEC VT100 终端。
 
 ## 现代终端
+
+<div align="left">
+
+<figure><img src="../.gitbook/assets/iterm2.jpg" alt=""><figcaption><p>iTerm2</p></figcaption></figure>
+
+</div>
 
 现代终端更多是以软件形式存在的，即终端模拟器（Terminal Emulator），它们在现代操作系统（如Linux、macOS、Windows）中作为应用程序运行，模拟早期硬件终端的功能。
 
@@ -24,13 +34,13 @@
 
 ## Teletype
 
-虽然 Teletype 设备现在已经不再使用了，但它的概念和功能依然保留在 Linux 中。
-
 <div align="left">
 
-<figure><img src="../.gitbook/assets/teletype.jpg" alt="" width="563"><figcaption><p>Teletype Model 33</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/teletype.jpg" alt=""><figcaption><p>Teletype Model 33</p></figcaption></figure>
 
 </div>
+
+虽然 Teletype 设备现在已经不再使用了，但它的概念和功能依然保留在 Linux 中。
 
 ### /dev/tty
 
