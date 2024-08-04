@@ -21,37 +21,20 @@ The table below shows the section numbers of the manual followed by the types of
 9   Kernel routines [Non standard]
 ```
 
-### **可执行程序或 Shell 命令**
+### Section
 
 ```
 man 1 ls/cp/mv
-```
-
-### **系统调用**
-
-```
 man 2 write/open/close
-```
-
-### **库调用**
-
-```
 man 3 printf/malloc/free
-```
-
-### 特殊文件
-
-```
 man 4 tty/null/random
-```
-
-### 文件格式与规约
-
-```
 man 5 passwd/fstab
+man 7 man
+man 8 ifconfig/iptables/mount
+man 9 fork # not work
 ```
 
-### **游戏**
+### Games
 
 `fortune` 可以随机的名言警句和笑话。
 
@@ -67,24 +50,6 @@ man 6 fortune
 
 ```
 fortune | cowsay | lolcat
-```
-
-### 杂项
-
-```
-man 7 man
-```
-
-### 系统管理命令
-
-```
-man 8 ifconfig/iptables/mount
-```
-
-### 内核例程
-
-```
-man 9 fork // not work
 ```
 
 ## LS
@@ -202,14 +167,12 @@ cat -b FILE
 
 ## LESS
 
+`more` 命令只能按回车加载，`less` 命令更强大，因为 less is more。
+
 ```
 $ man less
 less - opposite of more
 ```
-
-### MORE
-
-`more` 命令只能按回车加载，`less` 命令更强大，因为 less is more。
 
 ## USERMOD
 
@@ -229,3 +192,12 @@ usermod -s /sbin/nologin kuga
 ```
 kuga:x:1000:1000::/home/kuga:/sbin/nologin
 ```
+
+## LN
+
+```
+$ man ln
+ln - make links between files
+```
+
+### 软链接
