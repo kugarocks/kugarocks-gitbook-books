@@ -2,6 +2,8 @@
 
 ## 早期终端
 
+
+
 早期的终端是一种独立的硬件设备，用于连接到主计算机或服务器。它们通常包括：
 
 * **输入设备**：如键盘，用于输入命令和数据。
@@ -23,6 +25,12 @@
 ## Teletype
 
 虽然 Teletype 设备现在已经不再使用了，但它的概念和功能依然保留在 Linux 中。
+
+<div align="left">
+
+<figure><img src="../.gitbook/assets/teletype.jpg" alt="" width="563"><figcaption><p>Teletype Model 33</p></figcaption></figure>
+
+</div>
 
 ### /dev/tty
 
@@ -109,3 +117,11 @@ echo "hello, world" > /dev/pts/1
 ```
 
 ### 强制退出特定 PTS
+
+```
+ps -t /dev/pts/1
+```
+
+```
+kill -9 PID
+```
