@@ -73,7 +73,7 @@ $ man tty
 tty - print the file name of the terminal connected to standard input
 ```
 
-### 查看 PTS 会话
+### 查看当前登录的用户
 
 最常用的方法是 `w` 命令。
 
@@ -94,3 +94,18 @@ root     pts/1        2024-08-04 11:11 (120.231.138.130)
 ```
 
 当然你要直接用 `ls` 也行。
+
+```
+$ ls -l
+crw--w---- 1 root tty  136, 0 Aug  4  2024 0
+crw--w---- 1 root tty  136, 1 Aug  4 11:11 1
+c--------- 1 root root   5, 2 Jul 19 15:10 ptmx
+```
+
+### 给特定 PTS 发送消息
+
+```
+echo "hello, world" > /dev/pts/1
+```
+
+### 强制退出特定 PTS
