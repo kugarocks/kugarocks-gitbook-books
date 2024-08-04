@@ -45,13 +45,52 @@ echo "Hello, $name"
 
 ### /dev/pts
 
-PTS 是伪终端的简写（Pseudo-Terminal），`/dev/pts` 是一个目录，用于存放伪终端设备文件
-
-
-
-在命令行中输入 `tty`，会得到以下的输出。
+PTS 是伪终端的简写（Pseudo-Terminal），`/dev/pts` 是一个目录，用于存放伪终端设备文件。
 
 ```
+ll /dev/pts
+```
+
+```
+crw--w---- 1 root tty  136, 0 Aug  4 10:59 0
+c--------- 1 root root   5, 2 Jul 19 15:10 ptmx
+```
+
+列出 `/dev/pts` 目录的文件，一般情况下会看到两类文件。
+
+* ptmx：Master Device，主设备，用于创建和管理伪终端对。
+* 0/1/2：Slave Device，从设备，每一个 `ssh` 会话对应一个数字。
+
+在命令行输入 tty 命令可以看到当前连接的伪终端设备文件。
+
+```
+$ tty
 /dev/pts/0
 ```
 
+```
+$ man tty
+tty - print the file name of the terminal connected to standard input
+```
+
+### 查看 PTS 会话
+
+最常用的方法是 `w` 命令。
+
+```
+$ w
+ 11:18:19 up 15 days, 20:08,  2 users,  load average: 0.00, 0.01, 0.05
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     pts/0    120.231.138.130  10:59    3.00s  0.02s  0.00s w
+root     pts/1    120.231.138.130  11:11    6:41   0.01s  0.01s -bash
+```
+
+还可以使用 `who` 命令。
+
+```
+$ who
+root     pts/0        2024-08-04 10:59 (120.231.138.130)
+root     pts/1        2024-08-04 11:11 (120.231.138.130)
+```
+
+当然你要直接用 `ls` 也行。
