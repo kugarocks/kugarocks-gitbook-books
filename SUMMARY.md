@@ -7,3 +7,4 @@
   * [Systemd](linux-command-line-shell-scripting-bible/systemd.md)
   * [常用命令](linux-rocks/chang-yong-ming-ling.md)
   * [文件系统-todo](linux-rocks/wen-jian-xi-tong-todo.md)
+  * [PS 命令](linux-rocks/ps-ming-ling.md)

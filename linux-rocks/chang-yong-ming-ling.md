@@ -1,24 +1,40 @@
 # 常用命令
 
+## ENV
+
+```
+ Static hostname: kugarocks
+       Icon name: computer-vm
+         Chassis: vm
+      Machine ID: ***
+         Boot ID: ***
+  Virtualization: kvm
+Operating System: Ubuntu 22.04.4 LTS
+          Kernel: Linux 5.15.0-113-generic
+    Architecture: x86-64
+ Hardware Vendor: Alibaba Cloud
+  Hardware Model: Alibaba Cloud ECS
+```
+
 ## MAN
 
 该指令可以查看手册页中不同的章节（Section）。
 
 ```
 $ man man
-man - an interface to the on-line reference manuals
+man - an interface to the system reference manuals
 
 The table below shows the section numbers of the manual followed by the types of pages they contain.
 
-1   Executable programs or shell commands
-2   System calls (functions provided by the kernel)
-3   Library calls (functions within program libraries)
-4   Special files (usually found in /dev)
-5   File formats and conventions eg /etc/passwd
-6   Games
-7   Miscellaneous (including macro packages and conventions), e.g. man(7), groff(7)
-8   System administration commands (usually only for root)
-9   Kernel routines [Non standard]
+1 Executable programs or shell commands
+2 System calls (functions provided by the kernel)
+3 Library calls (functions within program libraries)
+4 Special files (usually found in /dev)
+5 File formats and conventions, e.g. /etc/passwd
+6 Games
+7 Miscellaneous (including macro packages and conventions), e.g. man(7), groff(7)
+8 System administration commands (usually only for root)
+9 Kernel routines [Non standard]
 ```
 
 ### Section
@@ -39,11 +55,12 @@ man 9 fork # not work
 `fortune` 可以随机的名言警句和笑话。
 
 ```
-yum install fortune-mod
+apt install fortune/fortune-mod/fortunes-zh
 ```
 
 ```
-man 6 fortune
+$ man 6 fortune
+fortune - print a random, hopefully interesting, adage
 ```
 
 可以结合 `cowsay` 和 `lolcat` 一起玩。
@@ -66,42 +83,44 @@ ls -lh
 ```
 
 ```
-dr-xr-x---. 6 root root 4.0K   Aug  4 16:43 root
-crw-rw-rw-  1 root tty  5, 0   Aug  3 17:17 /dev/tty
-brw-rw----  1 root disk 253, 0 Jul 19 15:10 /dev/vda
+drwx------ 9 root root 4.0K   Aug  7 22:38 root
+crw-rw-rw- 1 root tty  5,   0 Aug  7 22:33 /dev/tty
+brw-rw---- 1 root disk 252, 0 Aug  7 21:30 /dev/vda
 ```
 
 * 文件类型：`d` 目录，`-` 文件，`l` 链接，`c` 字符设备，`b` 块设备。
-* 文件权限：550，Owner: 5，Group: 5, Other: 0。
-* 硬链接数：6
+* 文件权限：700，Owner: 7，Group: 0, Other: 0
+* 硬链接数：9
 * 文件属主：root
 * 文件组别：root
 * 文件大小：4.0K
-* 修改时间：Aug 4 16:43
+* 修改时间：Aug 7 22:38
 * 文件名称：root
+* 主设备号：Major Number，5/252，标识设备驱动程序
+* 次设备号：Minor Number，0，标识同一类设备中的某个设备实例
 
 ### 只显示目录
 
 ```
-ll -d */
+ls -ld */
 ```
 
 包括隐藏文件
 
 ```
-ll -d .*/ */
+ls -ld .*/ */
 ```
 
 ### 显示特定目录信息
 
 ```
-ll -d /usr
+ls -ld /usr
 ```
 
 ### 在文件后面添加类型符号
 
 ```
-ll -F /
+ls -lF /
 ```
 
 * `/`：目录
@@ -123,12 +142,12 @@ file — determine file type
 
 ```
 $ file /dev/tty
-/dev/tty: character special
+/dev/tty: character special (5/0)
 ```
 
 ```
 $ file /dev/vda
-/dev/vda: block special
+/dev/vda: block special (252/0)
 ```
 
 ### 链接文件
@@ -137,8 +156,7 @@ $ file /dev/vda
 
 ```
 $ file /bin
-/bin: symbolic link to `usr/bin'
-# usr/bin 左边是反单引号，右边是单引号，bug?
+/bin: symbolic link to usr/bin
 ```
 
 ```
@@ -187,7 +205,7 @@ usermod - modify a user account
 usermod -s /sbin/nologin kuga
 ```
 
-此命令会在 `/etc/passwd` 中把 `bin/bash` 改为 `/sbin/nologin`
+此命令会在 `/etc/passwd` 中把 `bin/sh` 改为 `/sbin/nologin`
 
 ```
 kuga:x:1000:1000::/home/kuga:/sbin/nologin
