@@ -3,12 +3,6 @@
 ## ENV
 
 ```
- Static hostname: kugarocks
-       Icon name: computer-vm
-         Chassis: vm
-      Machine ID: ***
-         Boot ID: ***
-  Virtualization: kvm
 Operating System: Ubuntu 22.04.4 LTS
           Kernel: Linux 5.15.0-113-generic
     Architecture: x86-64
