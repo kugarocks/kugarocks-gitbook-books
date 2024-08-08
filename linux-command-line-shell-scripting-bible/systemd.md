@@ -60,7 +60,7 @@ runlevel
 N 5
 ```
 
-5 表示 `graphical.target`，N 表示上一次的 runlevel 为 No，下面是 who 的例子。
+5 对应 `graphical.target`，N 表示上一次的 runlevel 为 No。
 
 ```
 who -r
@@ -70,7 +70,7 @@ who -r
 run-level 5  2024-08-07 21:30
 ```
 
-阿里云的 Ubuntu 系统默认设置为`graphical.target`，‌这是为了方便用户使用图界面（VNC）来管理操作系统，如果不需要，可以把运行级换成 3 `multi-user.target`。
+阿里云的 Ubuntu 默认目标为 `graphical.target`，‌这是为了方便用户使用图形界面（VNC）来管理操作系统，不需要的话可以把目标换成 `multi-user.target`。
 
 ```
 systemctl set-default multi-user.target
@@ -111,59 +111,6 @@ lrwxrwxrwx 1 root root 17 Jul 10 11:05 K01sysstat -> ../init.d/sysstat
 * `/usr/lib/systemd/system/`：发行版提供的单元文件。
 * `/run/systemd/system/`：运行时生成的单元文件。
 
-### Nginx 单元文件
-
-```
-ll /etc/systemd/system/multi-user.target.wants/nginx.service
-```
-
-```
-...nginx.service -> /usr/lib/systemd/system/nginx.service
-```
-
-```
-cat /usr/lib/systemd/system/nginx.service
-```
-
-```
-# 定义了服务的描述和依赖关系
-[Unit]
-Description=The nginx HTTP and reverse proxy server
-After=network-online.target remote-fs.target nss-lookup.target
-Wants=network-online.target
-
-# 定义了如何启动、停止和重启服务
-[Service]
-# forking 表示服务在启动时会创建子进程，父进程会退出
-Type=forking
-# 存储主进程的 ID
-PIDFile=/run/nginx.pid
-# Nginx will fail to start if /run/nginx.pid already exists but has the wrong
-# SELinux context. This might happen when running `nginx -t` from the cmdline.
-# https://bugzilla.redhat.com/show_bug.cgi?id=1268621
-
-# 启动准备，删除 pid 文件
-ExecStartPre=/usr/bin/rm -f /run/nginx.pid
-# 启动准备，测试 nginx 配置
-ExecStartPre=/usr/sbin/nginx -t
-# 启动命令
-ExecStart=/usr/sbin/nginx
-# 重载配置命令
-ExecReload=/usr/sbin/nginx -s reload
-# 停止服务时发送给主进程的信号
-KillSignal=SIGQUIT
-# 终止服务的等待时间，超过 5 秒则强制终止
-TimeoutStopSec=5
-# 终止进程的方式，仅终止主进程，不会影响子进程
-KillMode=process
-# 创建独立的临时目录，/tmp 和 /var/tmp
-PrivateTmp=true
-
-# 如何安装和启用服务
-[Install]
-WantedBy=multi-user.target
-```
-
 ### Nginx 状态
 
 ```
@@ -171,23 +118,77 @@ systemctl status nginx
 ```
 
 ```
-● nginx.service - The nginx HTTP and reverse proxy server
-   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
-   Active: active (running) since Wed 2024-07-24 16:21:13 CST; 4 days ago
-  Process: 23494 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 23491 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
-  Process: 23488 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 23496 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─23496 nginx: master process /usr/sbin/nginx
-           ├─23665 nginx: worker process
-           └─23666 nginx: worker process
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2024-08-08 12:43:17 CST; 2h 1min ago
+       Docs: man:nginx(8)
+   Main PID: 11037 (nginx)
+      Tasks: 3 (limit: 1917)
+     Memory: 8.6M
+        CPU: 29ms
+     CGroup: /system.slice/nginx.service
+             ├─11037 "nginx: master process /usr/sbin/nginx -g daemon on; master_process on;"
+             ├─11039 "nginx: worker process" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
+             └─11040 "nginx: worker process" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" "" ""
 
-Jul 24 16:21:13 systemd[1]: Stopped The nginx HTTP and reverse proxy server.
-Jul 24 16:21:13 systemd[1]: Starting The nginx HTTP and reverse proxy server...
-Jul 24 16:21:13 nginx[23491]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-Jul 24 16:21:13 nginx[23491]: nginx: configuration file /etc/nginx/nginx.conf test is successful
-Jul 24 16:21:13 systemd[1]: Started The nginx HTTP and reverse proxy server.
+Aug 08 12:43:17 guitarocks systemd[1]: Starting A high performance web server and a reverse proxy server...
+Aug 08 12:43:17 guitarocks systemd[1]: Started A high performance web server and a reverse proxy server.
+```
+
+### Nginx 单元文件
+
+```
+ls -l /etc/systemd/system/multi-user.target.wants/nginx.service
+```
+
+```
+...nginx.service -> /lib/systemd/system/nginx.service
+```
+
+```
+cat /usr/lib/systemd/system/nginx.service
+```
+
+```
+# Stop dance for nginx
+# =======================
+#
+# ExecStop sends SIGSTOP (graceful stop) to the nginx process.
+# If, after 5s (--retry QUIT/5) nginx is still running, systemd takes control
+# and sends SIGTERM (fast shutdown) to the main process.
+# After another 5s (TimeoutStopSec=5), and if nginx is alive, systemd sends
+# SIGKILL to all the remaining processes in the process group (KillMode=mixed).
+#
+# nginx signals reference doc:
+# http://nginx.org/en/docs/control.html
+#
+# 定义了服务的描述和依赖关系
+[Unit]
+Description=A high performance web server and a reverse proxy server
+Documentation=man:nginx(8)
+After=network.target nss-lookup.target
+
+[Service]
+# forking 表示服务在启动时会创建子进程，父进程会退出
+Type=forking
+# 存储主进程的 ID
+PIDFile=/run/nginx.pid
+# 启动准备，测试 nginx 配置
+ExecStartPre=/usr/sbin/nginx -t -q -g 'daemon on; master_process on;'
+# 启动命令，-g 设置全局指定，会覆盖Nginx配置文件的选项
+ExecStart=/usr/sbin/nginx -g 'daemon on; master_process on;'
+# 重载配置命令
+ExecReload=/usr/sbin/nginx -g 'daemon on; master_process on;' -s reload
+# 终止进程的命令
+ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/nginx.pid
+# 终止服务的等待时间，超过 5 秒则强制终止
+TimeoutStopSec=5
+# 终止进程的方式，SIGTERM，超时，SIGKILL，优雅->强制
+KillMode=mixed
+
+# 如何安装和启用服务
+[Install]
+WantedBy=multi-user.target
 ```
 
 ### 常用命令
