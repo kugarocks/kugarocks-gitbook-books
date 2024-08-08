@@ -1,82 +1,96 @@
 # Systemd
 
+## ENV
+
+```
+System: Ubuntu 22.04.4 LTS
+Kernel: Linux 5.15.0-113-generic
+Archit: x86-64
+```
+
 ## Systemd
 
+查看进程号为 1 的进程。
+
 ```
-ps aux | grep systemd
+ps -p 1
 ```
 
 ```
-root  1  0.0  0.2 191052  4092 ?  Ss  Jul19  0:10 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+PID TTY          TIME CMD
+  1 ?        00:00:04 systemd
 ```
 
-systemd 进程号为 1，主要功能是系统初始化、进程管理和日志记录。名称后面加 `.d` 是 Unix 守护进程的命名规范。[System D](https://en.wikipedia.org/wiki/System\_D) 也是一个术语，表示快速思考和解决问题的能力。它是 2010 年诞生的，在这之前用的是 SysVinit。
+但当我们想显示详细信息的时候，结果会有些不一样。
+
+```
+ps -p 1 -f
+```
+
+```
+UID  PID PPID C STIME TTY TIME     CMD
+root   1    0 0 Aug07 ?   00:00:04 /sbin/init noibrs
+```
+
+其实这两个进程是一样的，因为 `init` 指向的是 `systemd`。
+
+```
+file /sbin/init
+```
+
+```
+/sbin/init: symbolic link to /lib/systemd/systemd
+```
+
+`init` 是 Unix 最早的初始化进程，由于 `systemd` 取代了 `init`，为了兼容性，`/sbin/init` 通常是一个指向 `systemd` 的软链接。名称后面加 `d` 是 Unix 守护进程的命名规范，[System D](https://en.wikipedia.org/wiki/System\_D) 是一个术语，表示快速思考和解决问题的能力。`systemd` 诞生于 2010 年，在这之前用的是 SysVinit。
 
 ## SysVinit
 
 Unix System V 这种初始化方法现在已经不怎么用了，但在一些旧的发行版中还能见到。
 
-### Runlevel
+### runlevel
 
-runlevel 也是这个 SysVinit 的产物，在 CentOS 中可以通过下面的方式查询 runlevel。
+runlevel 也是这个 SysVinit 的产物。
 
 ```
 runlevel
 ```
 
 ```
-N 3
+N 5
 ```
 
-3 表示 `multi-user.target`，N 表示上一次的 runlevel 为 No，下面是 who 的例子。
+5 表示 `graphical.target`，N 表示上一次的 runlevel 为 No，下面是 who 的例子。
 
 ```
 who -r
 ```
 
 ```
-run-level 3  2024-07-19 15:10
+run-level 5  2024-08-07 21:30
 ```
 
-`/etc/inittab` 文件定义了系统的默认运行级，看注释已经不再用了。
+阿里云的 Ubuntu 系统默认设置为`graphical.target`，‌这是为了方便用户使用图界面（VNC）来管理操作系统，如果不需要，可以把运行级换成 3 `multi-user.target`。
 
 ```
-cat /etc/inittab
+systemctl set-default multi-user.target
 ```
 
-```
-# inittab is no longer used when using systemd.
-#
-# ADDING CONFIGURATION HERE WILL HAVE NO EFFECT ON YOUR SYSTEM.
-#
-# Ctrl-Alt-Delete is handled by /usr/lib/systemd/system/ctrl-alt-del.target
-#
-# systemd uses 'targets' instead of runlevels. By default, there are two main targets:
-#
-# multi-user.target: analogous to runlevel 3
-# graphical.target: analogous to runlevel 5
-#
-# To view current default target, run:
-# systemctl get-default
-#
-# To set a default target, run:
-# systemctl set-default TARGET.target
-#
-```
+### /etc/rcX.d
 
-### rc.d
-
-rc 是 run commands 的缩写，d 是目录的意思，目的是为了避免单一配置文件与包含它们的目录之间的命名冲突。另外以前 `/etc/init` 和 `/etc/init.d` 在同一个目录，现在 `/etc/init` 已经搬到 `/sbin/init`，而且你会发现他指向的是 systemd。
+rc 是 run commands 的缩写，`.d` 是目录的意思，目的是为了避免命名冲突。这个目录包含了特定运行级下启动的进程，例如运行级 5 对应 `/etc/rc5.d`。
 
 ```
-ll /sbin/init
+ls -l /etc/rc5.d
 ```
 
 ```
-lrwxrwxrwx 1 root root 22 Jun 28 12:29 /sbin/init -> ../lib/systemd/systemd
+lrwxrwxrwx 1 root root 13 Jul 10 11:08 K01fio -> ../init.d/fio
+lrwxrwxrwx 1 root root 20 Apr 21  2022 K01irqbalance -> ../init.d/irqbalance
+lrwxrwxrwx 1 root root 17 Jul 10 11:05 K01sysstat -> ../init.d/sysstat
 ```
 
-`/etc/rc.d` 这个目录包含了特定运行级下启动的进程，例如运行级 3 对应 `/etc/rc.d/rc3.d`。
+虽然现在使用的是 `systemd`，但为了兼容性，这些目录和脚本仍然保留着。
 
 ## Unit Files
 

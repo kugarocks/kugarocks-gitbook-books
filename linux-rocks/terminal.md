@@ -1,5 +1,13 @@
 # Terminal
 
+## ENV
+
+```
+System: Ubuntu 22.04.4 LTS
+Kernel: Linux 5.15.0-113-generic
+Archit: x86-64
+```
+
 ## 早期终端
 
 <div align="left">
@@ -47,10 +55,10 @@
 可以看到它的文件类型是 `c`（字符设备），代表当前进程所连接的终端设备。
 
 ```
-crw-rw-rw- 1 root tty 5, 0 Aug  3 17:17 /dev/tty
+crw-rw-rw- 1 root tty 5, 0 Aug  7 22:33 /dev/tty
 ```
 
-它的权限是 `666`，设备号是 `0`，这就是我们常常看到的标准输入/输出。
+它的权限是 `666`，主设备号是 `5`，次设备号是 `0`，这就是我们常常看到的标准输入/输出。
 
 ```
 echo "Hello, World" > /dev/tty
@@ -66,12 +74,12 @@ echo "Hello, $name"
 PTS 是伪终端的简写（Pseudo-Terminal），`/dev/pts` 是一个目录，用于存放伪终端设备文件。
 
 ```
-ll /dev/pts
+ls -l /dev/pts/
 ```
 
 ```
-crw--w---- 1 root tty  136, 0 Aug  4 10:59 0
-c--------- 1 root root   5, 2 Jul 19 15:10 ptmx
+crw------- 1 root tty  136, 0 Aug  8 09:52 0
+c--------- 1 root root   5, 2 Aug  7 21:30 ptmx
 ```
 
 列出 `/dev/pts` 目录的文件，一般情况下会看到两类文件。
@@ -114,10 +122,10 @@ root     pts/1        2024-08-04 11:11 (120.231.138.130)
 当然你要直接用 `ls` 也行。
 
 ```
-$ ls -l
-crw--w---- 1 root tty  136, 0 Aug  4  2024 0
-crw--w---- 1 root tty  136, 1 Aug  4 11:11 1
-c--------- 1 root root   5, 2 Jul 19 15:10 ptmx
+$ ls -l /dev/pts/
+crw------- 1 root tty  136, 0 Aug  8  2024 0
+crw------- 1 root tty  136, 1 Aug  8 09:53 1
+c--------- 1 root root   5, 2 Aug  7 21:30 ptmx
 ```
 
 ### 给特定 PTS 发送消息
