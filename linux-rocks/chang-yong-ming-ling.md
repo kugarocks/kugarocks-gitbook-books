@@ -3,11 +3,9 @@
 ## ENV
 
 ```
-Operating System: Ubuntu 22.04.4 LTS
-          Kernel: Linux 5.15.0-113-generic
-    Architecture: x86-64
- Hardware Vendor: Alibaba Cloud
-  Hardware Model: Alibaba Cloud ECS
+System: Ubuntu 22.04.4 LTS
+Kernel: Linux 5.15.0-113-generic
+Archit: x86-64
 ```
 
 ## MAN
