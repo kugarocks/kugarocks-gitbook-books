@@ -113,6 +113,8 @@ lrwxrwxrwx 1 root root 17 Jul 10 11:05 K01sysstat -> ../init.d/sysstat
 
 ### Nginx 状态
 
+可以通过 Nginx 的状态查看服务的单元文件路径。
+
 ```
 systemctl status nginx
 ```
@@ -138,16 +140,10 @@ Aug 08 12:43:17 guitarocks systemd[1]: Started A high performance web server and
 ### Nginx 单元文件
 
 ```
-ls -l /etc/systemd/system/multi-user.target.wants/nginx.service
+cat /lib/systemd/system/nginx.service
 ```
 
-```
-...nginx.service -> /lib/systemd/system/nginx.service
-```
-
-```
-cat /usr/lib/systemd/system/nginx.service
-```
+> `/lib` 和 `/usr/lib` 的内容在现代的 Linux 发行版中可能是相同的，原因是文件系统层次结构（Filesystem Hierarchy Standard, FHS）规范的变化。最近几年，许多 Linux 发行版将 `/lib` 视为 `/usr/lib` 的符号链接，以减少目录结构的复杂性。
 
 ```
 # Stop dance for nginx
