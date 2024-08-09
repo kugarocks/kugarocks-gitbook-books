@@ -141,8 +141,8 @@ Aug 08 12:43:17 guitarocks systemd[1]: Started A high performance web server and
 
 ```
 /etc/systemd/system/multi-user.target.wants/nginx.service
-/usr/lib/systemd/system/nginx.service
 /lib/systemd/system/nginx.service
+/usr/lib/systemd/system/nginx.service
 ```
 
 Nginx 服务的单元文件有好几个路径，第一个是软链接。
@@ -152,7 +152,7 @@ $ file /etc/systemd/system/multi-user.target.wants/nginx.service
 ...: symbolic link to /lib/systemd/system/nginx.service
 ```
 
-第二第三个是硬链接，他们的 inode 是一样的，并且 `/lib` 是 `/usr/lib` 的软链接。
+第二第三个是硬链接，他们的 inode 是一样的，并且 `/lib` 是指向 `/usr/lib` 的软链接。
 
 ```
 $ ls -i /usr/lib/systemd/system/nginx.service
@@ -239,10 +239,12 @@ multi-user.target # 多用户模式，不包含图形界面
 target 文件通常存储在 `/usr/lib/systemd/system/` 或 `/etc/systemd/system/` 目录中。每个 target 文件都包含关于该 target 的依赖关系和启动顺序的信息。我们可以看一下 `multi-user.target` 这个文件内容。
 
 ```
-cat /usr/lib/systemd/system/multi-user.target
+cat /lib/systemd/system/multi-user.target
 ```
 
 ```
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
 #  This file is part of systemd.
 #
 #  systemd is free software; you can redistribute it and/or modify it
@@ -263,7 +265,7 @@ AllowIsolate=yes
 
 ```
 /etc/systemd/system/multi-user.target.wants/
-/usr/lib/systemd/system/multi-user.target.wants/
+/lib/systemd/system/multi-user.target.wants/
 ```
 
 上面的是用户定义配置，下面的是系统默认配置
