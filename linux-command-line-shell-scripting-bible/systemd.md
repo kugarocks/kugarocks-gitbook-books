@@ -139,20 +139,36 @@ Aug 08 12:43:17 guitarocks systemd[1]: Started A high performance web server and
 
 ### Nginx 单元文件
 
-你可能发现 Nginx 服务的配置文件有好几个路径。
-
 ```
 /etc/systemd/system/multi-user.target.wants/nginx.service
 /usr/lib/systemd/system/nginx.service
 /lib/systemd/system/nginx.service
 ```
 
-> `/lib` 和 `/usr/lib` 的内容在现代的 Linux 发行版中可能是相同的，原因是文件系统层次结构（Filesystem Hierarchy Standard, FHS）规范的变化。最近几年，许多 Linux 发行版将 `/lib` 视为 `/usr/lib` 的符号链接，以减少目录结构的复杂性。
-
-todo
+Nginx 服务的单元文件有好几个路径，第一个是软链接。
 
 ```
-cat /lib/systemd/system/nginx.service
+$ file /etc/systemd/system/multi-user.target.wants/nginx.service
+...: symbolic link to /lib/systemd/system/nginx.service
+```
+
+第二第三个是硬链接，他们的 inode 是一样的，并且 `/lib` 是 `/usr/lib` 的软链接。
+
+```
+$ ls -i /usr/lib/systemd/system/nginx.service
+265498 /usr/lib/systemd/system/nginx.service
+
+$ ls -i /lib/systemd/system/nginx.service
+265498 /lib/systemd/system/nginx.service
+
+$ file /lib
+/lib: symbolic link to usr/lib
+```
+
+下面是单元文件的内容。
+
+```
+$ cat /lib/systemd/system/nginx.service
 ```
 
 ```
